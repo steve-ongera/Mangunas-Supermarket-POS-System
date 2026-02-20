@@ -215,6 +215,7 @@ function Products() {
       <div className="products-grid">
         {products.map(p => (
           <div key={p.id} className={`product-card${p.is_low_stock ? " low-stock" : ""}`}>
+            {p.image_url && <img src={p.image_url} alt={p.name} className="product-img" />}
             <div className="product-name">{p.name}</div>
             <div className="product-cat">{p.category_name}</div>
             <div className="product-price">KSh {parseFloat(p.price).toLocaleString()}</div>
@@ -395,6 +396,11 @@ function POSTerminal() {
         <div className="pos-product-grid">
           {products.map(p => (
             <button key={p.id} className="pos-product-btn" onClick={() => addToCart(p)} disabled={p.stock_quantity <= 0}>
+              <div className="ppb-img">
+                {p.image_url
+                  ? <img src={p.image_url} alt={p.name} />
+                  : <span className="ppb-img-placeholder">🛒</span>}
+              </div>
               <div className="ppb-name">{p.name}</div>
               <div className="ppb-price">KSh {parseFloat(p.price).toLocaleString()}</div>
               <div className={`ppb-stock${p.stock_quantity <= 0 ? " out" : p.is_low_stock ? " low" : ""}`}>
