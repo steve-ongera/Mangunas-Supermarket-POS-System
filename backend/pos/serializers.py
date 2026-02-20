@@ -23,14 +23,22 @@ class CategorySerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     category_name = serializers.CharField(source="category.name", read_only=True)
     is_low_stock = serializers.BooleanField(read_only=True)
+    image_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = [
             "id", "name", "barcode", "category", "category_name",
             "price", "cost_price", "stock_quantity", "low_stock_threshold",
-            "is_active", "is_low_stock", "image", "created_at", "updated_at"
+            "is_active", "is_low_stock", "image", "image_url",
+            "created_at", "updated_at"
         ]
+
+    def get_image_url(self, obj):
+        request = self.context.get("request")
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+        return None
 
 
 class CustomerSerializer(serializers.ModelSerializer):
