@@ -22,14 +22,18 @@ router.register(r"orders", OrderViewSet)
 router.register(r"stock-movements", StockMovementViewSet)
 
 urlpatterns = [
-    path("", include(router.urls)),
-    # Auth
+    # Auth — must come before router
     path("auth/login/", LoginView.as_view(), name="login"),
+
     # Dashboard
     path("dashboard/", DashboardView.as_view(), name="dashboard"),
-    # Payments
+
+    # Payments — must come before router include
     path("payments/cash/", CashPaymentView.as_view(), name="cash-payment"),
     path("payments/mpesa/stk-push/", MpesaSTKPushView.as_view(), name="mpesa-stk-push"),
     path("payments/mpesa/callback/", MpesaCallbackView.as_view(), name="mpesa-callback"),
     path("payments/mpesa/query/<str:checkout_request_id>/", MpesaQueryView.as_view(), name="mpesa-query"),
+
+    # Router — last so it doesn't swallow the paths above
+    path("", include(router.urls)),
 ]
