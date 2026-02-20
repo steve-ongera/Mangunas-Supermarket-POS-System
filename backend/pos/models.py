@@ -79,13 +79,14 @@ class Order(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.order_number:
-            self.order_number = f"MNG{timezone.now().strftime('%Y%m%d')}{str(uuid.uuid4().int)[:4]}"
+            self.order_number = f"MNG{timezone.now().strftime('%Y%m%d%H%M%S')}{str(uuid.uuid4().int)[:5]}"
         super().save(*args, **kwargs)
 
     def calculate_totals(self):
+        from decimal import Decimal
         items = self.items.all()
         self.subtotal = sum(item.total_price for item in items)
-        self.tax_amount = self.subtotal * 0.16  # 16% VAT Kenya
+        self.tax_amount = self.subtotal * Decimal("0.16")  # 16% VAT Kenya
         self.total_amount = self.subtotal + self.tax_amount - self.discount_amount
         self.save(update_fields=["subtotal", "tax_amount", "total_amount"])
 
